@@ -1,0 +1,945 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   STYLE.CSS — All visual styling for the Level Up Gaming Blog
+   ════════════════════════════════════════════════════════════════════════════
+   
+   FILE PURPOSE:
+   This file contains all CSS that controls how the page LOOKS:
+   • Colors, spacing, fonts, borders
+   • Layout (grid, flexbox positioning)
+   • Hover effects, transitions, animations
+   • Responsive design for mobile/tablet/desktop
+   
+   STRUCTURE:
+   [CSS 1] CSS Variables — color palette & design tokens
+   [CSS 2] Base Reset & Body — global defaults
+   [CSS 3] Header & Navigation — sticky top bar
+   [CSS 4] Profile Icon Button — avatar circle in header
+   [CSS 5] Main Layout — page wrapper & spacing
+   [CSS 6] Featured Post Card — hero banner
+   [CSS 7] Category Filter Buttons
+   [CSS 8] Blog Card Grid — post thumbnails
+   [CSS 9] Footer
+   [CSS 10] Bio Modal — "surprise info" popup
+   [CSS 11] Profile Modal — 7:14 tall bio card
+   [CSS 12] Chat Widget — floating message bubble & box
+   [CSS 13] Responsive / Mobile Overrides
+   
+   HOW TO USE THIS FILE:
+   1. Save it as "style.css" in the same folder as index.html
+   2. index.html links to it with: <link rel="stylesheet" href="style.css">
+   3. When the browser loads, it downloads and applies all styles
+   
+   CAN IMPROVE:
+   • Use CSS custom properties (variables) for sizing to scale the whole
+     design up/down by changing one value
+   • Add CSS animations (@keyframes) for fade-in on page load
+   • Use CSS Grid for the entire layout instead of separate layouts
+   • Add dark/light theme toggle by swapping CSS variables
+════════════════════════════════════════════════════════════════════════════ */
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 1]  CSS VARIABLES — Colour palette & design tokens
+   ────────────────────────────────────────────────────────────────
+   WHY: Keeps every colour in one place so you only need to
+        change a value here to update it across the whole site.
+        This makes theming fast and consistent.
+   USE: Reference with  var(--name)  anywhere in the CSS.
+        Example: color: var(--accent-purple);
+   HOW:
+        1. Find the colour you want to change (e.g. --accent-purple)
+        2. Replace the hex code with a new one (e.g. #FF00FF)
+        3. Save the file — every element using that variable updates
+   CAN IMPROVE:
+     • Add --accent-green or --accent-gold for new badge types
+     • Add --font-main and --font-display for typography
+     • Add --radius-card / --radius-btn to centralise border-radius
+     • Add --shadow-sm / --shadow-lg for consistent shadows
+     • Add --spacing-unit (e.g. 1rem) and derive all padding/margin from it
+════════════════════════════════════════════════════════════════ */
+:root {
+    --bg-dark:        #0F0F0F;   /* page background                  */
+    --bg-card:        #1A1A1A;   /* card / panel background          */
+    --accent-purple:  #9D4EDD;   /* primary brand colour             */
+    --accent-blue:    #3A86FF;   /* links, active states, highlights */
+    --accent-cyan:    #00D9FF;   /* hover highlights, accents        */
+    --text-primary:   #F5F5F5;   /* headings & body text             */
+    --text-secondary: #A0A0A0;   /* captions, meta info              */
+    --border-color:   #2A2A2A;   /* card borders & dividers          */
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 2]  BASE RESET & BODY — global defaults
+   ────────────────────────────────────────────────────────────────
+   WHY: Removes browser default margin/padding so every element
+        starts from zero — prevents unexpected gaps.
+        Body sets the dark background, readable font & line height.
+   HOW:
+        • * { … } = CSS universal selector, affects every HTML element
+        • Margins & padding set to 0 so nothing has default spacing
+        • box-sizing: border-box makes padding/border not add to width
+   CAN IMPROVE:
+     • Swap Arial for a Google Font (e.g. "Inter", "Roboto") for a modern look
+     • Add scroll-behavior: smooth to html for smooth anchor scrolling
+     • Add -webkit-font-smoothing: antialiased for crisp text on Mac
+     • Add a system-font stack fallback: font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+════════════════════════════════════════════════════════════════ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    /* CAN ADD: scroll-behavior: smooth; */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: Arial, sans-serif;       /* 🔧 Change to a Google Font */
+    line-height: 1.6;                     /* makes text more readable    */
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 3]  HEADER & NAVIGATION — sticky top bar
+   ────────────────────────────────────────────────────────────────
+   WHY: position: sticky keeps the bar visible as the user scrolls.
+        z-index: 100 puts it above all page content.
+        The subtle purple gradient ties it to the brand colour.
+   HOW:
+        • position: sticky; top: 0; = bar sticks to top when scrolled
+        • z-index: 100 = stays above blog cards and modals (lower z-index)
+        • border-bottom divides it from the page content below
+   CAN IMPROVE:
+     • Add a nav menu with links (Reviews, Guides, Tips, Hardware)
+     • Add a dark/light mode toggle button
+     • Add a notification bell icon for new posts
+     • Add a transparent backdrop blur effect (CSS backdrop-filter)
+════════════════════════════════════════════════════════════════ */
+header {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, rgba(157, 78, 221, 0.05) 100%);
+    border-bottom: 1px solid var(--border-color);
+    padding: 2rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;    /* stacks vertically on mobile */
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--accent-purple);
+}
+
+.search-container {
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 12px rgba(58, 134, 255, 0.3);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 4]  PROFILE ICON BUTTON — circular avatar in header
+   ────────────────────────────────────────────────────────────────
+   WHY: Gives visitors a quick visual anchor to click for your
+        full bio & social links. Shows your profile picture or
+        a fallback emoji if the image hasn't been set yet.
+   HOW:
+        • border-radius: 50% makes a square into a circle
+        • overflow: hidden crops the image to fit the circle
+        • object-fit: cover scales the image without distortion
+   CAN IMPROVE:
+     • Add a pulsing ring animation to draw attention (@keyframes)
+     • Show a small "🔴 LIVE" badge dot when you're streaming
+     • Replace the emoji fallback with initials inside a coloured circle
+     • Add a pointer cursor to make it clear it's clickable
+════════════════════════════════════════════════════════════════ */
+.profile-icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-purple);
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-icon-btn:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 217, 255, 0.4);
+}
+
+.profile-icon-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-icon-btn .profile-placeholder {
+    font-size: 1.4rem;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 5]  MAIN LAYOUT — page content wrapper
+   ────────────────────────────────────────────────────────────────
+   WHY: max-width 1200px centres the content on large screens.
+        padding keeps content away from screen edges on mobile.
+        margin: 0 auto ensures the box stays centred.
+   HOW:
+        • max-width 1200px = when viewport is wider than 1200px,
+          the content stays 1200px wide and centred
+        • padding 3rem 1rem = 3rem top/bottom, 1rem left/right (mobile-friendly)
+   CAN IMPROVE:
+     • Add a sidebar layout (2/3 content + 1/3 sidebar) for wider screens
+     • Add a "back to top" floating button that appears on scroll
+     • Add a reading-time-left counter badge
+════════════════════════════════════════════════════════════════ */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+}
+
+.featured-section {
+    margin-bottom: 4rem;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 6]  FEATURED POST CARD — hero banner at the top
+   ────────────────────────────────────────────────────────────────
+   WHY: Highlights the most important post with a large two-column
+        layout: text on the left, image/emoji on the right.
+        The purple tint gradient separates it from regular cards.
+   HOW:
+        • grid-template-columns: 1fr 1fr = two equal-width columns
+        • gap: 2rem = space between the columns
+        • align-items: center = vertically centres content in both columns
+   CAN IMPROVE:
+     • Add an animated background shimmer or video loop behind it
+     • Make the image slot a slideshow / carousel of recent posts
+     • Add a "views" or "likes" counter badge
+     • Add a play button overlay on the image for a video
+════════════════════════════════════════════════════════════════ */
+.featured-post {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(157, 78, 221, 0.1) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.featured-content h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.featured-content p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.featured-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    background: rgba(157, 78, 221, 0.2);
+    color: var(--accent-purple);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 1px solid var(--accent-purple);
+}
+
+.featured-image {
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+}
+
+.featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 7]  CATEGORY FILTER BUTTONS — All / Review / Guide / Tips / Hardware
+   ────────────────────────────────────────────────────────────────
+   WHY: Lets visitors quickly narrow posts by topic.
+        .active class highlights the currently selected category in blue.
+   HOW:
+        • flex = buttons sit in a row, wrap to next line if needed
+        • .filter-btn.active = the selector for the active state
+        • background: var(--accent-blue) changes the background to blue
+   CAN IMPROVE:
+     • Add post-count badges inside each button (e.g. "Reviews (3)")
+     • Turn these into icon+label tabs with a bottom-border indicator
+     • Add a smooth underline slide animation on .active
+     • Add a "Clear filters" button that resets to "All"
+════════════════════════════════════════════════════════════════ */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.6rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.filter-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.filter-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 8]  BLOG CARD GRID — post thumbnail cards
+   ────────────────────────────────────────────────────────────────
+   WHY: auto-fill grid means cards wrap naturally at any screen
+        width without needing breakpoints for every column count.
+        The lift + cyan border on hover makes cards feel interactive.
+   HOW:
+        • grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+          = automatically fit cards at min 300px wide, grow to fill space
+        • gap: 2rem = space between cards in all directions
+   CAN IMPROVE:
+     • Add a "NEW" ribbon badge on cards posted within 7 days
+     • Add a like/bookmark icon in the card footer
+     • Make the card-image slot auto-rotate between 2–3 screenshots
+     • Add a skeleton loader while images load
+     • Show a "read in X minutes" progress bar on re-visit using localStorage
+════════════════════════════════════════════════════════════════ */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.blog-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.blog-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-4px);
+}
+
+.card-image {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 1.5rem;
+    flex: 1;  /* grows to fill space, pushes footer down */
+}
+
+.card-category {
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--accent-cyan);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+}
+
+.card-description {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.read-more {
+    color: var(--accent-blue);
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.read-more:hover {
+    color: var(--accent-cyan);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.empty-state h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 9]  FOOTER
+   ────────────────────────────────────────────────────────────────
+   WHY: Gives the page a clean closing bar with copyright info.
+   HOW:
+        • margin-top: 4rem = pushes it down from the content above
+        • text-align: center = centred text
+   CAN IMPROVE:
+     • Add footer columns: Quick Links | Social | Newsletter signup
+     • Add a "Powered by ☕" credit or affiliate disclaimer
+     • Add a newsletter signup form
+     • Add social media icon links
+════════════════════════════════════════════════════════════════ */
+footer {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--text-secondary);
+    margin-top: 4rem;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 10]  BIO MODAL — "surprise info" popup (original feature)
+   ────────────────────────────────────────────────────────────────
+   WHY: A centred overlay that shows your bio and social links
+        when the visitor clicks "surprise info →" on the featured post.
+        .modal.show switches display from none → flex to reveal it.
+   HOW:
+        • position: fixed; (left: 0; top: 0; width: 100%; height: 100%)
+          = fills the entire screen with a dark backdrop
+        • display: none (hidden by default)
+        • display: flex (shown when .show class is added)
+   CAN IMPROVE:
+     • Add a fade-in / scale-up CSS animation on open (@keyframes)
+     • Show a "Currently live on Twitch 🔴" live status badge
+     • Add a Discord invite button
+     • Add a Patreon or Buy Me A Coffee link
+════════════════════════════════════════════════════════════════ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--accent-purple);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 50px rgba(157, 78, 221, 0.3);
+}
+
+.modal-close {
+    float: right;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-purple);
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--accent-cyan);
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    color: var(--accent-purple);
+    margin: 1rem 0;
+    clear: both;
+}
+
+.modal-bio {
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 1.5rem 0;
+    color: var(--text-primary);
+}
+
+.modal-links {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.modal-link {
+    display: inline-block;
+    padding: 0.8rem 1.2rem;
+    background: var(--accent-purple);
+    color: var(--bg-dark);
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.modal-link:hover {
+    background: var(--accent-cyan);
+    transform: translateX(5px);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 11]  PROFILE MODAL — tall 7:14 card popup
+   ────────────────────────────────────────────────────────────────
+   WHY: Opens when the visitor clicks your profile icon in the
+        header. Designed as a tall phone-like card (7:14 ratio)
+        showing your photo, bio, and all social platform links.
+   HOW:
+        • width: min(360px, 90vw) = max 360px, but shrinks on mobile
+        • height: min(720px, 90vh) = 1:2 ratio (360px:720px)
+        • flex-direction: column = stacks content vertically
+   CAN IMPROVE:
+     • Add a banner image behind the profile picture
+     • Add follower / subscriber counts pulled from an API
+     • Show latest stream title or YouTube video thumbnail
+     • Add animation on entry (scale-up or slide-in)
+     • Add a "Follow" button that links to Twitch
+════════════════════════════════════════════════════════════════ */
+.profile-modal {
+    display: none;
+    position: fixed;
+    z-index: 1100;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-modal.show {
+    display: flex;
+}
+
+.profile-modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--accent-purple);
+    border-radius: 16px;
+    box-shadow: 0 0 60px rgba(157, 78, 221, 0.4);
+    width: min(360px, 90vw);
+    height: min(720px, 90vh);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1.5rem 2.5rem;
+    position: relative;
+}
+
+.profile-modal-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--accent-purple);
+    cursor: pointer;
+    border: none;
+    background: none;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.profile-modal-close:hover {
+    color: var(--accent-cyan);
+}
+
+.profile-pic-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-purple);
+    overflow: hidden;
+    margin-top: 1rem;
+    margin-bottom: 1.2rem;
+    background: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.profile-pic-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-modal-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--accent-purple);
+    margin-bottom: 0.3rem;
+    text-align: center;
+}
+
+.profile-modal-tagline {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.profile-modal-bio {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+.profile-modal-links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.profile-modal-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--accent-purple);
+    color: var(--bg-dark);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.profile-modal-link:hover {
+    background: var(--accent-cyan);
+    transform: translateY(-2px);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 12]  CHAT WIDGET — floating message bubble & box
+   ────────────────────────────────────────────────────────────────
+   WHY: Gives visitors a quick way to send you a message directly
+        from the site without needing a full contact page.
+        The bubble sits fixed in the bottom-right corner at all times.
+        .chat-box.open switches it from hidden to visible.
+   HOW:
+        • position: fixed; bottom: 2rem; right: 2rem;
+          = always visible 2rem from bottom-right, even on scroll
+        • width: 56px; height: 56px; border-radius: 50%;
+          = creates a perfect circle
+   CAN IMPROVE:
+     • Add a bounce animation on the bubble to attract attention
+     • Show a reply / auto-response message after sending
+     • Add an emoji picker button inside the text box
+     • Add a "subject" dropdown (Collab? / Bug report? / Just saying hi)
+     • Add typing indicator when server is processing
+════════════════════════════════════════════════════════════════ */
+.chat-trigger {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 900;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(157, 78, 221, 0.5);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.chat-trigger:hover {
+    background: var(--accent-cyan);
+    transform: scale(1.1);
+    box-shadow: 0 4px 24px rgba(0, 217, 255, 0.5);
+}
+
+.chat-trigger svg {
+    width: 26px;
+    height: 26px;
+    fill: #fff;
+}
+
+.chat-box {
+    position: fixed;
+    bottom: 6.5rem;
+    right: 2rem;
+    z-index: 900;
+    width: 320px;
+    background: var(--bg-card);
+    border: 1px solid var(--accent-purple);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(157, 78, 221, 0.35);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-box.open {
+    display: flex;
+}
+
+.chat-box-header {
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-box-header span {
+    font-weight: bold;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.chat-box-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.chat-box-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.chat-name-input,
+.chat-textarea {
+    width: 100%;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+    resize: none;
+    transition: border-color 0.2s;
+}
+
+.chat-name-input:focus,
+.chat-textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.chat-textarea {
+    height: 120px;
+}
+
+.chat-char-count {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    text-align: right;
+    margin-top: -0.4rem;
+}
+
+.chat-char-count.over {
+    color: #ff4d4d;
+}
+
+.chat-send-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent-purple);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chat-send-btn:hover {
+    background: var(--accent-cyan);
+    color: var(--bg-dark);
+}
+
+.chat-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chat-status {
+    font-size: 0.82rem;
+    text-align: center;
+    min-height: 1.2rem;
+    color: var(--accent-cyan);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   [CSS 13]  RESPONSIVE / MOBILE OVERRIDES
+   ────────────────────────────────────────────────────────────────
+   WHY: At ≤768px the two-column layouts switch to single column
+        so everything stays readable on phones.
+   HOW:
+        • @media (max-width: 768px) { … }
+          = CSS rule that only applies when viewport width ≤ 768px
+   CAN IMPROVE:
+     • Add tablet breakpoint at 1024px for a 2-column card grid
+     • Collapse the filter buttons into a horizontal scroll strip
+     • Make the chat box full-width on very small screens
+     • Hide the logo on mobile if space is tight
+     • Make the profile icon smaller on mobile
+════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .featured-post {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .featured-image {
+        height: 200px;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-box {
+        width: calc(100vw - 2rem);
+        right: 1rem;
+    }
+}

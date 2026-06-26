@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Up - Gaming Blog</title>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         LINK TO EXTERNAL CSS
+         ────────────────────────────────────────────────────────────────
+         WHY: By linking to an external CSS file instead of putting styles
+              inside <style> tags, we keep HTML and styling separate.
+              This makes the code cleaner and easier to maintain.
+         HOW: The href points to style.css in the same folder.
+         CAN IMPROVE:
+           • Add a preload hint: <link rel="preload" href="style.css">
+             to speed up style loading on slow connections
+           • Add a fallback <noscript> stylesheet for no-CSS fallback
+    ════════════════════════════════════════════════════════════════ -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 1]  HEADER — logo, search bar, profile icon
+         ────────────────────────────────────────────────────────────────
+         WHY: Sticky top bar that stays visible while scrolling.
+              Contains the site logo, a live search box that filters posts
+              as you type, and the circular profile icon.
+         CAN IMPROVE:
+           • Add a nav bar with anchor links (Reviews, Guides, About…)
+           • Replace the text logo with an SVG/image logo file
+           • Add a "🔴 LIVE" badge next to the logo when streaming
+    ════════════════════════════════════════════════════════════════ -->
+    <header>
+        <div class="header-content">
+
+            <!-- Site logo / brand name -->
+            <div class="logo">@iamlazydanger</div>
+
+            <!-- Live search — filters blog cards as the visitor types -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search posts..."
+                >
+            </div>
+
+            <!-- Profile icon — click to open the full bio card (Profile Modal) -->
+            <!-- 🔧 REPLACE src WITH YOUR PROFILE PICTURE URL in script.js IMAGE_LINKS section -->
+            <button class="profile-icon-btn" onclick="showProfileModal()" title="View Profile">
+                <img
+                    id="headerProfileImg"
+                    src="YOUR_PROFILE_PICTURE_URL_HERE"
+                    alt="Profile"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                >
+                <span class="profile-placeholder" style="display:none;">🎮</span>
+            </button>
+
+        </div>
+    </header>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 2]  MAIN CONTENT — featured hero + filtered blog grid
+         ────────────────────────────────────────────────────────────────
+         WHY: These sections are empty containers — JavaScript fills them
+              dynamically using showFeatured(), showFilters(), showPosts().
+              This means adding a new post only requires editing the JS data.
+         CAN IMPROVE:
+           • Add a "Latest Videos" YouTube embed row below the blog grid
+           • Add a Twitch embed panel that shows your stream live
+           • Add a tag cloud or popular-posts sidebar
+    ════════════════════════════════════════════════════════════════ -->
+    <main>
+
+        <!-- Hero / featured post — filled by showFeatured() -->
+        <section class="featured-section" id="featuredSection"></section>
+
+        <section>
+            <!-- Category filter buttons — filled by showFilters() -->
+            <div class="filters" id="filtersContainer"></div>
+
+            <!-- Blog post cards — filled by showPosts() -->
+            <div class="blog-grid" id="blogGrid"></div>
+
+            <!-- Shown when no posts match the current search or filter -->
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <h2>No posts found</h2>
+                <p>Try adjusting your search or filters</p>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 3]  FOOTER
+         ────────────────────────────────────────────────────────────────
+         WHY: Simple copyright bar at the bottom of the page.
+         CAN IMPROVE:
+           • Add social icon links row
+           • Add a "Back to top ↑" anchor link
+           • Add a short affiliate / sponsorship disclaimer
+    ════════════════════════════════════════════════════════════════ -->
+    <footer>
+        <p>&copy; 2026 Level Up Gaming Blog. Level up your game knowledge.</p>
+    </footer>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 4]  CHAT BUBBLE BUTTON — fixed bottom-right floating icon
+         ────────────────────────────────────────────────────────────────
+         WHY: Always-visible button that opens and closes the message box.
+              Uses an inline SVG speech-bubble icon so no image file needed.
+         CAN IMPROVE:
+           • Add a red unread-count badge number over the bubble
+           • Swap the SVG for a custom icon that matches your brand
+    ════════════════════════════════════════════════════════════════ -->
+    <button class="chat-trigger" id="chatTrigger" onclick="toggleChat()" title="Send a message">
+        <!-- Message bubble icon (SVG) -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+        </svg>
+    </button>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 5]  CHAT MESSAGE BOX — opens above the bubble
+         ────────────────────────────────────────────────────────────────
+         WHY: Collects an optional sender name and a message (max 300 chars),
+              then emails it to dharmaraj.p2013@gmail.com via EmailJS.
+              The box is hidden by default; toggleChat() adds class "open".
+         CAN IMPROVE:
+           • Add a subject/topic dropdown
+           • Add a file attachment option (e.g. screenshot for bug reports)
+           • Add a honeypot field to block spam bots
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="chat-box" id="chatBox">
+        <div class="chat-box-header">
+            <span>💬 Message @iamlazydanger</span>
+            <button class="chat-box-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-box-body">
+            <input 
+                type="text"  
+                class="chat-name-input" 
+                id="chatName"    
+                placeholder="Your name (optional)"
+            >
+            <textarea
+                class="chat-textarea"
+                id="chatMessage"
+                placeholder="Type your message… (max 300 characters)"
+                maxlength="300"
+                oninput="updateCharCount()"
+            ></textarea>
+            <div class="chat-char-count" id="charCount">0 / 300</div>
+            <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">Send Message</button>
+            <div class="chat-status" id="chatStatus"></div>
+        </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 6]  BIO MODAL — "surprise info" popup (original feature)
+         ────────────────────────────────────────────────────────────────
+         WHY: Triggered by the "surprise info →" link on the featured card.
+              Shows your gamer bio and four social platform links.
+              Clicking outside the white box or pressing × closes it.
+         CAN IMPROVE:
+           • Add your latest Twitch clip or YouTube short as embedded video
+           • Add a "Follow on Twitch" button that deep-links to your channel
+           • Display your current game / what you're playing badge
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="modal" id="bioModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBioModal()">&times;</button>
+            <div class="modal-title">🖤 Gamer 🖤 Reality is just my loading screen 🤖🎮</div>
+            <div class="modal-bio">
+                <strong>Fueled by caffeine, collecting epic moments 😮‍💨</strong><br><br>
+                Still learning... :)<br><br>
+                This is <strong>iamlazydanger</strong>, and the goal is simple: <strong>100% pure entertainment</strong>.<br><br>
+                Buckle up, hit subscribe, and let's play some games!
+            </div>
+            <div class="modal-links">
+                <a href="https://www.twitch.tv/iamlazydanger" target="_blank" class="modal-link">🟣 Twitch</a>
+                <a href="https://www.youtube.com/@iamlazydanger" target="_blank" class="modal-link">🔴 YouTube</a>
+                <a href="https://www.instagram.com/iamlazydanger" target="_blank" class="modal-link">📸 Instagram</a>
+                <a href="https://kick.com/iamlazydanger" target="_blank" class="modal-link">💜 Kick</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [HTML 7]  PROFILE MODAL — tall 7:14 bio card
+         ────────────────────────────────────────────────────────────────
+         WHY: Opens when the visitor clicks your profile icon in the header.
+              Styled as a tall phone-like card showing your profile picture,
+              name, tagline, full bio, and all social platform links.
+         CAN IMPROVE:
+           • Add a banner/header image at the very top of the card
+           • Add a "Currently playing: [game name]" status row
+           • Add a Discord join button as a fifth social link
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-modal-content">
+
+            <button class="profile-modal-close" onclick="closeProfileModal()">×</button>
+
+            <!-- Profile picture — source set via IMAGE_LINKS.profilePicture in script.js -->
+            <div class="profile-pic-wrapper">
+                <img
+                    id="profileModalImg"
+                    src="YOUR_PROFILE_PICTURE_URL_HERE"
+                    alt="iamlazydanger"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                >
+                <span style="display:none;">🎮</span>
+            </div>
+
+            <div class="profile-modal-name">@iamlazydanger</div>
+            <div class="profile-modal-tagline">🖤 Gamer 🖤 Reality is just my loading screen 🤖🎮</div>
+
+            <div class="profile-modal-bio">
+                <strong>Fueled by caffeine, collecting epic moments 😮‍💨</strong><br><br>
+                Still learning... :)<br><br>
+                This is <strong>iamlazydanger</strong>, and the goal is simple:<br>
+                <strong>100% pure entertainment.</strong><br><br>
+                Buckle up, hit subscribe, and let's play some games!
+            </div>
+
+            <div class="profile-modal-links">
+                <a href="https://www.twitch.tv/iamlazydanger" target="_blank" class="profile-modal-link">🟣 Twitch</a>
+                <a href="https://www.youtube.com/@iamlazydanger" target="_blank" class="profile-modal-link">🔴 YouTube</a>
+                <a href="https://www.instagram.com/iamlazydanger" target="_blank" class="profile-modal-link">📸 Instagram</a>
+                <a href="https://kick.com/iamlazydanger" target="_blank" class="profile-modal-link">💜 Kick</a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════
+         LINK TO EXTERNAL JAVASCRIPT
+         ────────────────────────────────────────────────────────────────
+         WHY: By linking to an external JS file instead of putting code
+              inside <script> tags, we keep HTML and logic separate.
+              The page structure (HTML) stays clean and readable.
+         HOW: The src points to script.js in the same folder.
+              Placed at the END of <body> so the HTML loads first,
+              then the JS initializes everything.
+         CAN IMPROVE:
+           • Add async or defer attribute for faster page load
+           • Add a <script> tag with a fallback message if JS is disabled
+    ════════════════════════════════════════════════════════════════ -->
+    <script src="script.js"></script>
+
+</body>
+</html>
